@@ -1,0 +1,105 @@
+#---- AWS EC2 instances -----
+
+[aws-k8s-masters]
+master-0 ansible_host=52.90.33.204 ansible_user=ubuntu
+master-1 ansible_host=3.84.7.1 ansible_user=ubuntu
+master-2 ansible_host=54.83.154.140 ansible_user=ubuntu
+master-3 ansible_host=18.205.235.207 ansible_user=centos ansible_python_interpreter=/usr/bin/python2
+
+[aws-k8s-workers]
+#<hostname> ansible_usehost=<ip>
+
+[aws-k8s-nodes:children]
+aws-k8s-masters
+aws-k8s-workers
+
+#---- Google Cloud Platform virtual machines -----
+
+[gcp-k8s-masters]
+#<hostname> ansible_usehost=<ip>
+
+[gcp-k8s-workers]
+#<hostname> ansible_usehost=<ip>
+
+[gcp-k8s-nodes:children]
+gcp-k8s-masters
+gcp-k8s-workers
+
+#---- DigitalOcean droplets -----
+
+[dgo-k8s-masters]
+#<hostname> ansible_usehost=<ip>
+
+[dgo-k8s-workers]
+#<hostname> ansible_usehost=<ip>
+
+[dgo-k8s-nodes:children]
+dgo-k8s-masters
+dgo-k8s-workers
+
+#---- VMware vSphere virtual machines -----
+
+[vmw-k8s-masters]
+#<hostname> ansible_usehost=<ip>
+
+[vmw-k8s-workers]
+#<hostname> ansible_usehost=<ip>
+
+[vmw-k8s-nodes:children]
+vmw-k8s-masters
+vmw-k8s-workers
+
+#---- Global inventory -----
+
+[k8s-masters:children]
+aws-k8s-masters
+gcp-k8s-masters
+dgo-k8s-masters
+vmw-k8s-masters
+
+[k8s-workers:children]
+aws-k8s-workers
+gcp-k8s-workers
+dgo-k8s-workers
+vmw-k8s-workers
+
+[k8s-nodes:children]
+aws-k8s-nodes
+gcp-k8s-nodes
+dgo-k8s-nodes
+vmw-k8s-nodes
+
+#---- Variables -----
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+# Keepalived vip
+# virtual_ip=10.54.235.61
+
+# change to your interface
+network_interface=eth0
+smoke_test_node_port=31111
+kubelet_workers_eviction_hard=memory.available<10%
+kubelet_masters_eviction_hard=memory.available<10%
+etcd_version=v3.4.4
+haproxy_stats_port=9000
+ha_proxy_port=5446
+
+# haproxy port for etcd
+etcd_proxy_port=3379
+proxy_port=6443
+
+# Container images
+haproxy_container_image=haproxy:alpine
+flannel_container_image=quay.io/coreos/flannel/flannel:v0.11.0-amd64
+
+kubedns_container_image=mirrorgooglecontainers/k8s-dns-kube-dns-amd64
+kubednsmasq_container_image=mirrorgooglecontainers/k8s-dns-dnsmasq-nanny-amd64
+kubednssidecar_container_image=mirrorgooglecontainers/k8s-dns-sidecar-amd64
+kubepause_container_image=mirrorgooglecontainers/pause-amd64
+kubeapi_server_container_image=mirrorgooglecontainers/kube-apiserver-amd64
+kubescheduler_container_image=mirrorgooglecontainers/kube-scheduler-amd64
+kubecontroller_manager_container_image=mirrorgooglecontainers/kube-controller-manager-amd64
+kubeproxy_container_image=mirrorgooglecontainers/kube-proxy-amd64
