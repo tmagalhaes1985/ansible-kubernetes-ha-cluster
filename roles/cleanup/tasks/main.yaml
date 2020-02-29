@@ -1,6 +1,6 @@
 - name: cleanup kubernetes data
   shell: |
-    kubeadm reset
+    kubeadm reset -f
     docker kill haproxy
     docker rm haproxy
     systemctl stop kubelet
@@ -46,9 +46,9 @@
 #     - 4194/tcp
 #     - 10254/tcp
 
-- name: remove yum packages
+- name: remove packages
   become: yes
-  yum:
+  package:
     name: "{{item}}"
     state: absent
   with_items:
@@ -56,24 +56,27 @@
     - kubeadm
     - kubectl
     - docker-ce
-    - yum-utils
-    - device-mapper-persistent-data
-    - lvm2
-    - policycoreutils-python
-    - python-pip
-    - container-selinux
 
-- name: Remove Artifactory repo
-  yum_repository:
-    name: Artifactory
-    state: absent
-
-- name: Remove docker-ce-stable repo
+- name: 'CentOS: Remove docker-ce-stable repo'
   yum_repository:
     name: docker-ce
     state: absent
+  when: ansible_distribution == 'CentOS'
 
-- name: Remove kubernetes repo
+- name: 'CentOS: Remove kubernetes repo'
   yum_repository:
     name: kubernetes
     state: absent
+  when: ansible_distribution == 'CentOS'
+
+- name: 'Ubuntu: Remove docker-ce-stable repo'
+  yum_repository:
+    name: docker-ce
+    state: absent
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'Ubuntu: Remove kubernetes repo'
+  yum_repository:
+    name: kubernetes
+    state: absent
+  when: ansible_distribution == 'Ubuntu'
