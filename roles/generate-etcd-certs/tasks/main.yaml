@@ -11,7 +11,6 @@
     cd /etc/kubernetes/pki/etcd
     /usr/local/bin/cfssl gencert -initca ca-csr.json | /usr/local/bin/cfssljson -bare ca -
 
-
 - name: Generate etcd client certs
   shell: |
     cd /etc/kubernetes/pki/etcd
@@ -28,4 +27,4 @@
     - ca.pem
     - ca-key.pem
     - client.pem
-    - client-key.pem    
+    - client-key.pem

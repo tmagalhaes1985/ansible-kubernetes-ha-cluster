@@ -31,7 +31,7 @@
   until: result.stdout.find("nginx") != -1
   with_items: "{{ groups['k8s-workers'] }}"
 
-- name: Get kubernetes no, po, svc
+- name: Get kubernetes nodes, pods, services
   shell: kubectl --kubeconfig=/tmp/kubeadm-ha/config get no,po,svc --all-namespaces
   register: rslt
 

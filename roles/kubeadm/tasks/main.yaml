@@ -9,21 +9,26 @@
 
 - name: set enforce
   command: setenforce 0
+  when: ansible_distribution == 'CentOS'
 
-- name: install kubeadm packages
+- name: Install kubeadm packages
   become: yes
-  yum:
-    name: "{{item}}"
-    allow_downgrade: yes 
+  package: name="{{ item }}" state=latest update_cache=yes
   with_items:
-    - kubelet-{{kubelet_version}}
+    - kubelet
     - kubeadm
     - kubectl
+  # allow_downgrade: yes
 
 - name: detect docker's cgroup-driver
   shell: docker info 2>/dev/null |grep -i cgroup | cut -d":" -f2 | tr -d " "
   register: docker_cgroup_driver
-  
+
+- file:
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    state: touch
+    mode: 0710
+
 - replace:
     path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
     regexp: '--cgroup-driver=(systemd|cgroupfs)'
@@ -53,18 +58,18 @@
     state: present
     create: yes
 
-- name: update sysctl
+- name: Update sysctl
   command: sysctl --system
 
 - set_fact:
-   eviction_hard: "{{ kubelet_masters_eviction_hard }} "
+    eviction_hard: "{{ kubelet_masters_eviction_hard }} "
   when: inventory_hostname in groups["k8s-masters"]
 
 - set_fact:
-   eviction_hard: "{{ kubelet_workers_eviction_hard }} "
+    eviction_hard: "{{ kubelet_workers_eviction_hard }} "
   when: inventory_hostname in groups["k8s-workers"]
 
-- name: change pause container to private registry and add eviction hard
+- name: Change pause container and add eviction hard
   lineinfile:
     path: /etc/systemd/system/kubelet.service.d/20-pod-infra-image.conf
     create: yes
@@ -73,24 +78,12 @@
        [Service]
        Environment="KUBELET_EXTRA_ARGS=--pod-infra-container-image={{kubepause_container_image}} --eviction-hard={{eviction_hard}}"
 
-
-
-
-
 - name: "Pulling image {{ item }}"
   shell: docker pull "{{ item }}"
   with_items:
     - "{{ kubeproxy_container_image }}"
     - "{{ kubepause_container_image }}"
     - "{{ flannel_container_image }}"
-    - "{{ heapster_container_image }}"
     - "{{ kubedns_container_image }}"
     - "{{ kubednsmasq_container_image }}"
     - "{{ kubednssidecar_container_image }}"
- 
-#- name: restart kubelet
-#  systemd:
-#    state: restarted
-#    daemon_reload: yes
-#    name: kubelet
-#    enabled: yes

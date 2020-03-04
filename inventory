@@ -1,3 +1,7 @@
+[new-k8s-masters]
+
+[new-k8s-workers]
+
 #---- AWS EC2 instances -----
 
 [aws-k8s-masters]
@@ -92,14 +96,13 @@ etcd_proxy_port=3379
 proxy_port=6443
 
 # Container images
-haproxy_container_image=haproxy:alpine
-flannel_container_image=quay.io/coreos/flannel/flannel:v0.11.0-amd64
-
-kubedns_container_image=mirrorgooglecontainers/k8s-dns-kube-dns-amd64
-kubednsmasq_container_image=mirrorgooglecontainers/k8s-dns-dnsmasq-nanny-amd64
-kubednssidecar_container_image=mirrorgooglecontainers/k8s-dns-sidecar-amd64
-kubepause_container_image=mirrorgooglecontainers/pause-amd64
-kubeapi_server_container_image=mirrorgooglecontainers/kube-apiserver-amd64
-kubescheduler_container_image=mirrorgooglecontainers/kube-scheduler-amd64
-kubecontroller_manager_container_image=mirrorgooglecontainers/kube-controller-manager-amd64
-kubeproxy_container_image=mirrorgooglecontainers/kube-proxy-amd64
+flannel_container_image=quay.io/coreos/flannel:v0.11.0-amd64
+haproxy_container_image=docker.io/library/haproxy:2.1.3-alpine
+kubepause_container_image=docker.io/mirrorgooglecontainers/pause-amd64:3.1
+kubedns_container_image=docker.io/mirrorgooglecontainers/k8s-dns-kube-dns-amd64:1.15.7
+kubednsmasq_container_image=docker.io/mirrorgooglecontainers/k8s-dns-dnsmasq-nanny-amd64:1.15.7
+kubednssidecar_container_image=docker.io/mirrorgooglecontainers/k8s-dns-sidecar-amd64:1.15.7
+kubeapi_server_container_image=docker.io/mirrorgooglecontainers/kube-apiserver-amd64:v1.16.2
+kubescheduler_container_image=docker.io/mirrorgooglecontainers/kube-scheduler-amd64:v1.16.2
+kubecontroller_manager_container_image=docker.io/mirrorgooglecontainers/kube-controller-manager-amd64:v1.16.2
+kubeproxy_container_image=docker.io/mirrorgooglecontainers/kube-proxy-amd64:v1.16.2

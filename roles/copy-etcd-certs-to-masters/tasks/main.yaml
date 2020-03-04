@@ -3,7 +3,7 @@
     path: /etc/kubernetes/pki/etcd
     state: directory
 
-- name: "copy {{item}} to other masters"
+- name: "Copy {{item}} to other masters"
   copy: 
     src: "/tmp/etcd/{{item}}"
     dest: "/etc/kubernetes/pki/etcd/{{item}}"

@@ -6,7 +6,6 @@
     regexp: 'server:.*'
     replace: "server: https://localhost:{{ha_proxy_port}}"
     backup: no
-  
  
 - name: Apply the change to the config map
   shell: kubectl --kubeconfig=/tmp/kubeadm-ha/config apply -f /tmp/kube-proxy-cm.yaml --force

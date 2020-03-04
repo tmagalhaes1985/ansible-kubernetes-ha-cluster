@@ -1,22 +1,39 @@
-- name: install ntpd
+- name: Install ntp
   become: yes
-  yum:
+  package:
     name: ntp
     state: present
 
-- name: stop ntpd service
+- name: 'Ubuntu: stop ntp service'
   become: yes
   service: 
-    name: ntpd 
+    name: ntp
     state: stopped
+  when: ansible_distribution == 'Ubuntu'
 
-- name: sync time
+- name: 'CentOS: stop ntp service'
+  become: yes
+  service: 
+    name: ntpd
+    state: stopped
+  when: ansible_distribution == 'CentOS'
+
+- name: Sync time
   become: yes
   command: ntpd -gq
 
-- name: start ntpd service
+- name: 'Ubuntu: start ntp service'
   become: yes
   service: 
-    name: ntpd 
+    name: ntp
     state: restarted 
     enabled: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: 'CentOS: start ntp service'
+  become: yes
+  service: 
+    name: ntpd
+    state: restarted 
+    enabled: yes
+  when: ansible_distribution == 'CentOS'

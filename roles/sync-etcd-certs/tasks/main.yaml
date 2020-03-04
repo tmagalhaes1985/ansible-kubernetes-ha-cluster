@@ -2,9 +2,10 @@
   copy:
     src: "/tmp/etcd/{{item}}"
     dest: "/etc/kubernetes/pki/etcd/{{item}}"
-  with_items:
-    - ca-config.json
-    - ca.pem
-    - ca-key.pem
-    - client.pem
-    - client-key.pem
+    loop: { 'ca-config.json', 'ca.pem', 'ca-key.pem', 'client.pem', 'client-key.pem' }
+  # with_items:
+  #   - ca-config.json
+  #   - ca.pem
+  #   - ca-key.pem
+  #   - client.pem
+  #   - client-key.pem
