@@ -1,0 +1,11 @@
+- import_playbook: repos.yaml
+- import_playbook: ntpd.yaml
+- import_playbook: docker.yaml
+- import_playbook: kubeadm.yaml
+#- import_playbook: setup-firewalld.yaml
+- import_playbook: etcd.yaml
+- import_playbook: setup-haproxy.yaml
+- import_playbook: kubernetes-masters.yaml
+- import_playbook: kubernetes-add-workers.yaml
+- import_playbook: config-k8s-for-haproxy.yaml
+- import_playbook: smoke-test.yaml
